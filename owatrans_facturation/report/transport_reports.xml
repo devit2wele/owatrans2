@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <report 
+            string="Transport Order" 
+            id="report_transport_order" 
+            model="transport.order" 
+            report_type="qweb-pdf"
+            name="owatrans_facturation.report_transportorder" 
+            file="owatrans_facturation.report_transportorder"
+            menu="False"
+            paperformat = "owatrans_facturation.paperformat_owatrans" 
+        />
+
+        <report 
+            string="Demande de prix" 
+            id="report_transport_quotation" 
+            model="transport.order" 
+            report_type="qweb-pdf"
+            name="owatrans_facturation.report_transportquotation" 
+            file="owatrans_facturation.report_transportquotation"
+            menu="False"
+            paperformat = "owatrans_facturation.paperformat_owatrans"
+        />
+        <report 
+            string="Facturation" 
+            id="report_transport_test" 
+            model="transport.order" 
+            report_type="qweb-pdf"
+            name="owatrans_facturation.report_transporttest" 
+            file="owatrans_facturation.report_transporttest"
+            paperformat = "owatrans_facturation.paperformat_owatrans"
+        />
+</odoo>

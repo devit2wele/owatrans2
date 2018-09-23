@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <!-- Top menu item -->
+        <menuitem name="Logistique"
+            id="menu_owatrans_logistique_root"
+            web_icon="owatrans_facturation,static/description/icon.png"
+            sequence="25"/>
+
+        <menuitem id="menu_owatrans_logistique_transport" name="SUPPLY"
+            parent="menu_owatrans_logistique_root" sequence="1" />
+        <menuitem id="menu_owatrans_logistique_conf" name="Configuration"
+            parent="menu_owatrans_logistique_root" sequence="2" />        
+
+        <!-- Zone menu -->
+        <record id="action_owatrans_zone" model="ir.actions.act_window">
+            <field name="name">Zone</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">owatrans.zone</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="context">{"search_default_filter_to_purchase":1}</field>
+            <field name="search_view_id" eval="False"/> <!-- Force empty -->
+            <field name="view_id" eval="False"/> <!-- Force empty -->
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new Zone.
+              </p>
+            </field>
+        </record>
+
+        <!-- Zone form -->
+        <record id="owatrans_zone_form" model="ir.ui.view">
+            <field name="name">owatrans.zone.form</field>
+            <field name="model">owatrans.zone</field>
+            <field name="arch" type="xml">
+                <form string="Zone">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="date" readonly="1"/>
+                                <field name="distance"/>
+                            </group>
+                            <group string="20'">
+                                <field name="price_ht_20"/>
+                                <field name="price_ttc_20" readonly='1'/>
+                            </group>
+                            <group string="40'">
+                                <field name="price_ht_40"/>
+                                <field name="price_ttc_40" readonly='1'/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Zone Line">
+                                <field name="zone_line">
+                                    <tree editable="bottom">
+                                        <field name="sequence" invisible="1"/>
+                                        <field name="date"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="price_ht_20"/>
+                                        <field name="price_ht_40"/>
+                                        <field name="price_ttc_20"/>
+                                        <field name="price_ttc_40"/>
+                                    </tree>
+                                </field>
+                            </page> 
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="owatrans_zone_tree" model="ir.ui.view">
+            <field name="name">owatrans.zone.tree</field>
+            <field name="model">owatrans.zone</field>
+            <field name="arch" type="xml">
+                <tree string="Tarif Sempos">
+                    <field name="name"/>
+                    <field name="distance"/>
+                    <field name="price_ht_20"/>
+                    <field name="price_ht_40"/>
+                    <field name="price_ttc_20"/>
+                    <field name="price_ttc_40"/> 
+                </tree>
+            </field>
+        </record>
+
+        <record id="owatrans_zone_kanban" model="ir.ui.view">
+            <field name="model">owatrans.zone</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div>
+                                <strong>
+                                    Destination: <a type="open"><field name="name" /></a>
+                                <ul>
+                                    <field name="currency_id" invisible="1"/>
+                                    <li>Kilométrage: <field name="distance"/></li>
+                                    <li>Montant HT 20': <field name="price_ht_20"/></li>
+                                    <li>Montant TTC 20': <field name="price_ttc_20"/></li>
+                                    <li>Montant HT 40': <field name="price_ht_40"/></li>
+                                    <li>Montant TTC 40': <field name="price_ttc_40"/></li>
+                                </ul>
+                                </strong>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Transport order menu -->
+        <record id="action_owatrans_rf" model="ir.actions.act_window">
+            <field name="name">Demande de prix</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">transport.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_filter_to_purchase":1}</field>
+            <field name="domain">[('state','in',('draft','annuler'))]</field>
+            <field name="search_view_id" eval="False"/> <!-- Force empty -->
+            <field name="view_id" eval="False"/> <!-- Force empty -->
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new request  for quotation.
+              </p>
+            </field>
+        </record>
+        <record id="action_owatrans_transport_order" model="ir.actions.act_window">
+            <field name="name">Transport Order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">transport.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_filter_to_purchase":1}</field>
+            <field name="domain">[('state','in',('confirmer',))]</field>
+            <field name="search_view_id" eval="False"/> <!-- Force empty -->
+            <field name="view_id" eval="False"/> <!-- Force empty -->
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new Transport Order.
+              </p>
+            </field>
+        </record>
+
+        <!-- Zone form -->
+        <record id="transport_order_form" model="ir.ui.view">
+            <field name="name">transport.order.form</field>
+            <field name="model">transport.order</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button 
+                            string="Remettre à l'état brouillon"
+                            name="action_draft" 
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible':[('state','not in',['annuler'])]}"
+                        />
+
+                        <button 
+                            string="Envoyer la demande de prix"
+                            name="action_send_rq" 
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible':['|', ('state','not in',['draft']),('notification','not in',['draft', 'print'])]}"
+                        />
+                        <button 
+                            string="Ré-envoyer la demande de prix"
+                            name="action_re_send_rq" 
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible':['|', ('state','not in',['draft']),('notification','in',['draft', 'print'])]}"
+                        />
+                        <button 
+                            string="Imprimer la demande de prix"
+                            name="action_print_rq" 
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible':[('state','not in',['draft'])]}"
+                        />
+                        <button 
+                            string="Confirm Order"
+                            name="action_confirm" 
+                            type="object"
+                            attrs="{'invisible':['|',('state','not in',['draft']), ('notification','not in',['draft','print'])]}"
+                        />
+
+                        <button 
+                            string="Confirm Order"
+                            name="action_confirm" 
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible':['|', ('state','not in',['draft']), ('notification','in',['draft', 'print'])]}"
+                        />
+                        
+                        <button 
+                            string="Envoyé l'ordre de transport"
+                            name="action_sent_to" 
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible':[('state','not in',['confirmer'])]}"
+                        />
+
+                        <button 
+                            string="Imprimer l'ordre de transport"
+                            name="action_print_to" 
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible':[('state','not in',['confirmer'])]}"
+                        />
+
+                        <button 
+                            string="Annuler"
+                            name="action_annuler" 
+                            type="object"
+                            attrs="{'invisible':[('state','in',['annuler'])]}"
+                        />
+
+                        <field name="state" widget="statusbar" readonly="1"/>
+                        <field name="notification" invisible="1"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="partner_id" domain="[('customer','=',True)]" />
+                                <field name="type" />
+                            </group>
+                            <group>
+                                <field name="origin"/>
+                                <field name="date"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Conteneur">
+                                <field name="order_line">
+                                    <tree string="Transport Order Lines" editable="bottom">
+                                        <field name="numero"/> 
+                                        <field name="type_container"/>
+                                        <field name="produit_type"/>
+                                        <field name="categorie"/>
+                                        <field name="zone_sempos"/>
+                                        <field name="destination"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="price_total" widget="monetary"/>
+                                    </tree>
+                                </field>
+                                <group class="oe_right">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                </group>
+                                <field name="notes" class="oe_inline" placeholder="An administrator can set up default Terms and conditions in your Company settings."/>
+                                <div class="oe_clear"/>
+                            </page> 
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="transport_order_tree" model="ir.ui.view">
+            <field name="name">transport.order.tree</field>
+            <field name="model">transport.order</field>
+            <field name="arch" type="xml">
+                <tree decoration-muted="state=='annuler'" decoration-info="state in ('confirmer',)">
+                    <field name="name"/>
+                    <field name="partner_id"/> 
+                    <field name="origin"/> 
+                    <field name="date"/> 
+                    <field name="state"/> 
+                </tree>
+            </field>
+        </record>
+
+        <!-- Franchise menu -->
+        <record id="action_owatrans_fiche_franchise" model="ir.actions.act_window">
+            <field name="name">Fiche franchise</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">owatrans.franchise</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_filter_to_purchase":1}</field>
+            <field name="search_view_id" eval="False"/> <!-- Force empty -->
+            <field name="view_id" eval="False"/> <!-- Force empty -->
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new franchise.
+              </p>
+            </field>
+        </record>
+
+        <!-- Franchise form -->
+        <record id="owatrans_fiche_franchise_form" model="ir.ui.view">
+            <field name="name">owatrans.franchise.form</field>
+            <field name="model">owatrans.franchise</field>
+            <field name="arch" type="xml">
+                <form string="Fiche franchise">
+                    <sheet>
+                        <group>
+                            <group string='Client et Agent'>
+                                <field name="client_id" domain="[('customer','=',True)]" />
+                                <field name="agent_id" domain="[('agent','=',True)]" context="{'search_default_agent': 1,'default_customer': 0,'default_supplier': 0, 'default_agent': 1}"/>
+                            </group>
+                            <group string='Numéro'>
+                                <field name="numero_tc"/>
+                                <field name="numero_compagnie"/>
+                                <field name="numero_conteneur"/>
+                            </group>
+                            <group string='Date'>
+                                <field name="date_entree"/>
+                                <field name="date_sortie"/>
+                            </group>
+                            <group string="Véhicule">
+                                <field name="vehicule"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="owatrans_fiche_franchise_tree" model="ir.ui.view">
+            <field name="name">owatrans.franchise.tree</field>
+            <field name="model">owatrans.franchise</field>
+            <field name="arch" type="xml">
+                <tree string="Fiche franchise">
+                    <field name="vehicule"/>
+                    <field name="numero_conteneur"/>
+                    <field name="client_id"/>
+                    <field name="agent_id"/>
+                    <field name="date_entree"/>
+                    <field name="date_sortie"/> 
+                </tree>
+            </field>
+        </record>
+
+        <!-- Agent -->
+        <record id="view_res_partner_filter_inherit" model="ir.ui.view">
+            <field name="name">res.partner.select.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='customer']" position="after">
+                    <filter string="Agents" name="agent" domain="[('agent','=',1), ('parent_id', '=', False)]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_partner_agent_form" model="ir.actions.act_window">
+            <field name="name">Agents</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="domain">[]</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="context">{'search_default_agent': 1,'default_customer': 0,'default_supplier': 0, 'default_agent': 1}</field>
+            <field name="filter" eval="True"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a contact in your address book.
+              </p><p>
+                Odoo helps you easily track all activities related to
+                a agent: discussions, history of franchise,
+                documents, etc.
+              </p>
+            </field>
+        </record>
+
+
+       
+
+        
+        <!--Transport order-->
+        <menuitem 
+            id="menu_rq" 
+            name="Demande de prix"
+            parent="menu_owatrans_logistique_transport"
+            action="action_owatrans_rf" 
+            sequence="1"
+        />
+        <menuitem 
+            id="menu_transport_order" 
+            name="Transport Order"
+            parent="menu_owatrans_logistique_transport"
+            action="action_owatrans_transport_order" 
+            sequence="2"
+        />
+
+        <menuitem 
+            id="menu_fiche_franchise" 
+            name="Fiche franchise"
+            parent="menu_owatrans_logistique_transport"
+            action="action_owatrans_fiche_franchise" 
+            sequence="3"
+        />
+
+        <!--Configuration menu-->
+        <menuitem 
+            id="menu_owatrans_partner_form" 
+            name="Clients"
+            parent="menu_owatrans_logistique_conf"
+            action="base.action_partner_form" 
+            sequence="1"
+        />
+
+        <menuitem 
+            id="menu_owatrans_partner_agent_form" 
+            name="Agents"
+            parent="menu_owatrans_logistique_conf"
+            action="action_partner_agent_form" 
+            sequence="2"
+        />
+
+        <menuitem 
+            id="menu_owatrans_zone" 
+            name="Tarif Sempos"
+            parent="menu_owatrans_logistique_conf"
+            action="action_owatrans_zone" 
+            sequence="3"
+        />
+
+
+
+
+
+
+</odoo>

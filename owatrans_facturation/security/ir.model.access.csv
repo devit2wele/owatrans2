@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_owatrans_zone,access_owatrans_zone,model_owatrans_zone,,1,1,1,1
+access_owatrans_zone_line,access_owatrans_zone_line,model_owatrans_zone_line,,1,1,1,1
+access_transport_order,access_transport_order,model_transport_order,,1,1,1,1
+access_transport_order_line,access_transport_order_line,model_transport_order_line,,1,1,1,1
+access_type_produit,access_type_produit,model_type_produit,,1,1,1,1
+access_owatrans_franchise,access_owatrans_franchise,model_owatrans_franchise,base.group_user,1,1,1,1
+

@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_owatrans_type_macaron,access_owatrans_type_macaron,model_owatrans_type_macaron,,1,1,1,1
+access_owatrans_macaron,access_owatrans_macaron,model_owatrans_macaron,,1,1,1,1
+access_fleet_vehicle,access_fleet_vehicle,model_fleet_vehicle,,1,1,1,1
+access_fleet_inventaire,access_fleet_inventaire,model_fleet_inventaire,,1,1,1,1
+access_fleet_prevision_maintenance,access_fleet_prevision_maintenance,model_fleet_prevision_maintenance,,1,1,1,1
+access_fleet_bon_essence,access_fleet_bon_essence,model_fleet_bon_essence,,1,1,1,1
+access_owatrans_gps,access_owatrans_gps,model_owatrans_gps,,1,1,1,1
+access_owatrans_maintenance_vehicule,access_owatrans_maintenance_vehicule,model_owatrans_maintenance_vehicule,,1,1,1,1
+access_owatrans_reservation,access_owatrans_reservation,model_owatrans_reservation,,1,1,1,1
+access_owatrans_objectif_mission,access_owatrans_objectif_mission,model_owatrans_objectif_mission,,1,1,1,1
+access_owatrans_mission,access_owatrans_mission,model_owatrans_mission,,1,1,1,1
+access_owatrans_missionnaire,access_owatrans_missionnaire,model_owatrans_missionnaire,,1,1,1,1

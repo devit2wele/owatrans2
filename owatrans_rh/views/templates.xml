@@ -1,0 +1,636 @@
+<odoo>
+    <data>
+        
+        <record id="view_owatrans_holidays_status_form" model="ir.ui.view">
+            <field name="name">owatrans.holidays.status.form.inherit</field>
+            <field name="model">hr.holidays.status</field>
+            <field name="priority">1</field>
+            <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
+            <field name="arch" type="xml">
+                <field name="double_validation" position ="after">
+                  <field name="delai_soumission" />
+                </field> 
+            </field>
+        </record>
+
+        <record id="view_owatrans_holidays_form" model="ir.ui.view">
+            <field name="name">owatrans.rh.form.inherit</field>
+            <field name="model">hr.holidays</field>
+            <field name="priority">1</field>
+            <field name="inherit_id" ref="hr_holidays.edit_holiday_new"/>
+            <field name="arch" type="xml">
+                <header>
+                    <button 
+                        string="Validation DP" name="Validation Sup" 
+                        states="Validation Sup" type="object" 
+                        class="oe_highlight" groups ="owatrans_rh.group_sup"
+                    />
+                    <button 
+                        string="Validation AG" name="validation_ag" 
+                        states="validate1" type="object" 
+                        class="oe_highlight" 
+                        groups ="owatrans_rh.group_sup"
+                    />
+                    <button 
+                        string="Validation DGA" name="validation_dga10" 
+                        states="confirm" type="object" 
+                        class="oe_highlight" groups ="owatrans_rh.group_sup"
+                    />
+                    <button 
+                        string="Refuse" name="refuse" 
+                        states="Validation Sup,validation_drh,confirm,validate1" type="workflow" 
+                        groups="base.group_hr_user,owatrans_rh.group_sup,owatrans_rh.group_dga,owatrans_rh.group_dg"
+                    />
+                    <button 
+                        string="Validation DRH" name="validation_drh" 
+                        states="validation_drh" type="object" class="oe_highlight"
+                    />
+                </header>
+                <field name="date_from" position ="replace">
+                    <field 
+                        name="date_from" nolabel="1"  
+                        attrs="{'required':[('type', '=', 'remove')]}" class="oe_inline"
+                    />
+                </field> 
+                <field name="number_of_days_temp" position ="replace">
+                    <field 
+                        name="number_of_days_temp"  
+                        class="oe_inline"
+                    />
+                </field>                 
+                <field name="date_to" position ="replace">
+                        <div>
+                            <field 
+                                name="date_to" nolabel="1" 
+                                attrs="{'required':[('type', '=', 'remove')]}" class="oe_inline"
+                            />
+                            <span style="font-weight: bold">(inclus)</span>
+                        </div>
+                </field>
+                <field name="state" position ="replace">
+                    <field 
+                        name="state" widget="statusbar" 
+                        statusbar_visible="draft,Validation Sup,validation_drh,confirm, validate, validate1" 
+                        statusbar_colors='{"confirm":"blue","validate1":"green","refuse":"red"}'
+                    />
+                </field>
+            </field>
+    </record>
+
+    <record id="view_owatrans_contract_form" model="ir.ui.view">
+        <field name="name">owatrans.contract.form.inherit</field>
+        <field name="model">hr.contract</field>
+        <field name="priority">1</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <!-- add other field -->
+            <field name="job_id" position ="after">
+                  <field name="categorie_id" />
+            </field> 
+            <!-- add other field -->
+            <field name="type_id" position ="after">
+                <field name="statut_id" />
+                <field name="nb_part"/>
+                <field name="remunere" attrs="{'invisible': [('type_id','!=','Stagiaire')]}" />
+            </field>
+            <!-- change field option -->
+            <field name="wage" position ="replace">
+                <field name="wage" required = "False" />
+            </field>
+        </field>
+    </record>
+
+    <record id="action_jours_feries_locaux" model="ir.actions.act_window">
+        <field name="name">Jours fériés locaux</field>
+        <field name="res_model">owatrans_rh.ferie</field>
+        <field name='view_type'>form</field>
+        <field name='view_mode'>tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Cliquez pour enregistrer un jour férié local.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_owatrans_jour_ferie_tree" model="ir.ui.view">
+        <field name="name">owatrans.jour_ferie.tree</field>
+        <field name="model">owatrans_rh.ferie</field>
+        <field name="arch" type="xml">
+            <tree string="Jours fériés locaux" editable="bottom">
+                <field name="name" />
+                <field name="date" />
+                <field name="statut" />
+                <field name="observation"/>
+                <button name="validate" string="Valider" class="oe_highlight" type="object" icon="STOCK_APPLY"  /> 
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_owatrans_jour_ferie_form" model="ir.ui.view">
+        <field name="name">owatrans.jour_ferie.form</field>
+        <field name="model">owatrans_rh.ferie</field>
+        <field name="arch" type="xml">
+            <form string="Jours fériés locaux">
+                <sheet>
+                    <group  col="4" colspan="4" string="Jours fériés locaux">
+                        <field name="name" />
+                        <field name="date" />
+                        <field name="statut" />
+                        <button name="validate" string="Valider" class="oe_highlight" type="object" icon="STOCK_APPLY"  /> 
+                        <newline />
+                        <field name="observation"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_view_leaves_dp" model="ir.actions.act_window">
+        <field name="name">Demande de congés à valider</field>
+        <field name="res_model">hr.holidays</field>
+        <field name='view_type'>form</field>
+        <field name='view_mode'>tree,form</field>
+        <field name="search_view_id" ref="hr_holidays.view_hr_holidays_filter"/>
+        <field name="domain">[('state','=','Validation Sup'),('employee_id.parent_id.user_id','=',uid)]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+               Cliquez pour enregistrer un nouvel employé.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_view_leaves_employee" model="ir.actions.act_window">
+        <field name="name">Demande de congés à valider</field>
+        <field name="res_model">hr.holidays</field>
+        <field name='view_type'>form</field>
+        <field name='view_mode'>tree,form</field>
+        <field name="search_view_id" ref="hr_holidays.view_hr_holidays_filter"/>
+        <field name="context">{"search_default_employee_id":'default_employee_id'}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+               Cliquez pour enregistrer un nouvel employé.
+            </p>
+        </field>
+    </record>
+
+    <record id="owatrans_rh_leaves_kanban" model="ir.ui.view">
+            <field name="name">owatrans.rh.leaves.kanban</field>
+            <field name="model">hr.employee</field>
+            <field name="arch" type="xml">
+                <kanban class="oe_background_grey" create="0">
+                    <field name="name"/>
+                    <field name="color"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                             <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_project oe_kanban_global_click">
+                                <div class="oe_dropdown_toggle oe_dropdown_kanban" groups="owatrans_rh.group_sup,owatrans_rh.group_dga,owatrans_rh.group_drh">
+                                    <span class="oe_e">í</span>
+                                    <ul class="oe_dropdown_menu">
+                                        <t t-if="widget.editable"><li><a type="edit">Edit...</a></li></t>
+                                        <t t-if="widget.deletable"><li><a type="delete">Delete</a></li></t>
+                                        <t t-if="widget.editable"><li><ul class="oe_kanban_colorpicker" data-field="color"/></li></t>
+                                    </ul>
+                                </div>
+                                <div class="oe_kanban_content">
+                                    <h4 class="text-center"><strong><field name="name"/></strong></h4>
+                                    <div class="oe_items_list oe_kanban_ellipsis">
+                                        <div>
+                                            <a name="%(action_view_leaves_dp)d" type="action">
+                                                <field name="remaining_leaves"/> Jours de congés restants
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a name="%(action_view_leaves_employee)d" type="action">Toutes les demandes</a>
+                                        </div>
+                                    </div>
+                                    <div class="oe_picking_type_gauge">
+                                        <field name="taken_leaves" widget="gauge" style="width:200px; height: 110px;" options="{'levelcolors': ['#a9d70b', '#f9c802', '#ff0000'], 'max_field':'max_leaves', 'on_click_label': 'dave'}">Déjà pris</field>
+                                        <field name="max_leaves" widget="gauge" style="width:150px; height: 110px;" options="{'levelcolors': ['#ff0000', '#f9c802','#a9d70b' ], 'max_field':'max_leaves', 'on_click_label': 'dave'}">Acquis</field>
+                                    </div>
+
+                                </div>
+                            </div>
+                       </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+    <record id="action_view_leaves_employee_kanban" model="ir.actions.act_window">
+        <field name="name">Demande de congés à valider</field>
+        <field name="res_model">hr.employee</field>
+        <field name='view_type'>form</field>
+        <field name='view_mode'>kanban, tree, form</field>
+        <field name="view_id" ref="owatrans_rh_leaves_kanban"/>
+        <field name="domain">[('user_id','=',1)]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Cliquez pour enregistrer un nouvel employé.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_employee_tree_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.tree.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='message_needaction']" position="after">
+                <button 
+                    name="pointage_entree" 
+                    type="object"
+                    string="Entrée"
+                />
+                <button 
+                    name="pointage_sortie_pause" 
+                    type="object"
+                    string="Sortie Pause"
+                />
+                <button 
+                    name="pointage_retour_pause" 
+                    type="object"
+                    string="Retour Pause"
+                />
+                <button 
+                    name="pointage_sortie" 
+                    type="object"
+                    string="Sortie"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Historique Pointages -->
+    <record id="action_historiques_pointages" model="ir.actions.act_window">
+            <field name="name">Historiques Pointages</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pointage.manuel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" eval="False"/> <!-- Force empty -->
+            <field name="view_id" eval="False"/> <!-- Force empty -->
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new objet.
+              </p>
+            </field>
+    </record>
+    
+    <!-- form historiques pointages -->
+    <record id="view_historiques_pointages_form" model="ir.ui.view">
+        <field name="name">pointage.manuel.form</field>
+        <field name="model">pointage.manuel</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="employee" readonly="1"/>
+                        <field name="type_pointage" readonly="1"/>
+                        <field name="date_pointage"/>
+                        <field name="heure_pointage"/>
+                        <field name="date_heure" invisible="1"/>
+                        <field name="presence_id" invisible="1"/>
+                        <field name="is_admin" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban historiques pointages -->
+    <record id="view_historiques_pointages_kanban" model="ir.ui.view">
+        <field name="name">pointage.manuel.kanban</field>
+        <field name="model">pointage.manuel</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div>
+                            <strong>
+                                ID: <a type="open"><field name="id" /></a>
+                            <ul>
+                                <li>Employee: <field name="employee" /></li>
+                                <li>Type pointage: <field name="type_pointage" /></li>
+                                <li>Date pointage: <field name="date_pointage" /></li>
+                                <li>Heure pointage: <field name="heure_pointage" /></li>
+                            </ul>
+                            </strong>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- tree historiques pointages -->
+    <record id="view_historiques_pointages_tree" model="ir.ui.view">
+        <field name="name">pointage.manuel.tree</field>
+        <field name="model">pointage.manuel</field>
+        <field name="arch" type="xml">
+            <tree string="">
+                <field name="employee"/>
+                <field name="type_pointage"/>
+                <field name="date_pointage"/>
+                <field name="heure_pointage"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_liste_presence" model="ir.actions.act_window">
+            <field name="name">Presence</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">owatrans.presence</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="context">{"search_default_filter_to_purchase":1}</field>
+            <field name="search_view_id" eval="False"/> <!-- Force empty -->
+            <field name="view_id" eval="False"/> <!-- Force empty -->
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+              </p>
+            </field>
+    </record>
+
+    <!-- Presence form -->
+    <record id="view_liste_presence_form" model="ir.ui.view">
+        <field name="name">owatrans.presence.form</field>
+        <field name="model">owatrans.presence</field>
+        <field name="arch" type="xml">
+            <form string="Presence">
+                <header>
+                    <button 
+                        string="Envoyer Presence"
+                        name="action_send_presence" 
+                        type="object"
+                        class="oe_highlight"
+                    />
+                    <button 
+                        string="Imprimer Presence"
+                        name="action_print_presence" 
+                        type="object"
+                        class="oe_highlight"
+                    />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="current_user" invisible="1"/>
+                        <field name="employee" attrs="{'readonly': [('current_user', 'is not', hr_manager)]}"/>
+                    </group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="hide_diff_presence" invisible="1"/>
+                        <field name="diff_presence" widget="float_time" attrs="{'invisible': [('hide_diff_presence', '=', 'NODISPLAY')]}"/>
+                    </group>
+                    <notebook>
+                        <page string="Liste pointages">
+                            <field name="pointage_manuel_ids">
+                                <form>
+                                    <group>
+                                        <field name="employee" />
+                                        <field name="type_pointage"/>
+                                        <field name="date_heure"/>
+                                    </group>
+                                </form>
+                                <tree >
+                                    <field name="employee"/>
+                                    <field name="type_pointage"/>
+                                    <field name="date_heure"/>
+                                </tree>
+                            </field>
+                        </page>    
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Employee -->
+    <record id="view_owatrans_employee_form" model="ir.ui.view">
+        <field name="name">hr.employee.inherit.form</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+           <field name="job_id" position ="after">
+              <field name="type_employee" />
+        </field> 
+        </field>
+    </record>
+
+    <record id="open_view_owatrans_employee_permanent_list_my" model="ir.actions.act_window">
+        <field name="name">Employees</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type_employee', '=', 'permanent')]</field>
+        <field name="context">{"type_employee":'permanent'}</field>
+        <field name="view_id" eval="False"/>
+        <field name="search_view_id" ref="hr.view_employee_filter"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to add a new employee(permanent).
+          </p><p>
+            With just a quick glance on the Odoo employee screen, you
+            can easily find all the information you need for each person;
+            contact data, job position, availability, etc.
+          </p>
+        </field>
+    </record>
+
+    <record id="open_view_owatrans_employee_prestataire_list_my" model="ir.actions.act_window">
+        <field name="name">Employees</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type_employee', '=', 'prestataire')]</field>
+        <field name="context">{}</field>
+        <field name="view_id" eval="False"/>
+        <field name="search_view_id" ref="hr.view_employee_filter"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to add a new employee(Prestataire).
+          </p><p>
+            With just a quick glance on the Odoo employee screen, you
+            can easily find all the information you need for each person;
+            contact data, job position, availability, etc.
+          </p>
+        </field>
+    </record>
+
+    <record id="open_view_owatrans_employee_stagiaire_list_my" model="ir.actions.act_window">
+        <field name="name">Employees</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type_employee', '=', 'stagiaire')]</field>
+        <field name="context">{}</field>
+        <field name="create">false</field>
+        <field name="view_id" eval="False"/>
+        <field name="search_view_id" ref="hr.view_employee_filter"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to add a new employee(stagiaire).
+          </p><p>
+            With just a quick glance on the Odoo employee screen, you
+            can easily find all the information you need for each person;
+            contact data, job position, availability, etc.
+          </p>
+        </field>
+    </record>
+    <record id="open_view_owatrans_employee_temporaire_list_my" model="ir.actions.act_window">
+        <field name="name">Employees</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type_employee', '=', 'temporaire')]</field>
+        <field name="context">{}</field>
+        <field name="create">false</field>
+        <field name="view_id" eval="False"/>
+        <field name="search_view_id" ref="hr.view_employee_filter"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to add a new employee(Temporaire).
+          </p><p>
+            With just a quick glance on the Odoo employee screen, you
+            can easily find all the information you need for each person;
+            contact data, job position, availability, etc.
+          </p>
+        </field>
+    </record>
+    <record id="open_view_owatrans_employee_journalier_list_my" model="ir.actions.act_window">
+        <field name="name">Employees</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type_employee', '=', 'journalier')]</field>
+        <field name="context">{}</field>
+        <field name="create">false</field>
+        <field name="view_id" eval="False"/>
+        <field name="search_view_id" ref="hr.view_employee_filter"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to add a new employee(Journalier).
+          </p><p>
+            With just a quick glance on the Odoo employee screen, you
+            can easily find all the information you need for each person;
+            contact data, job position, availability, etc.
+          </p>
+        </field>
+    </record>
+
+    <record id="open_view_owatrans_employee_all_list_my" model="ir.actions.act_window">
+        <field name="name">Employees</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="create">false</field>
+        <field name="view_id" eval="False"/>
+        <field name="search_view_id" ref="hr.view_employee_filter"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to add a new employee(Journalier).
+          </p><p>
+            With just a quick glance on the Odoo employee screen, you
+            can easily find all the information you need for each person;
+            contact data, job position, availability, etc.
+          </p>
+        </field>
+    </record>
+
+
+   <!--  <record id="view_employee_readonly" model="ir.ui.view">
+        <field name="name">owatrans.presence.form</field>
+        <field name="model">owatrans.presence</field>
+        <field name="inherit_id" ref="view_liste_presence_form" />
+        <field name="groups_id" eval="[(6, 0, [ref('hr.group_hr_manager')])]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee']" position="attributes">
+                <attribute name="readonly">False</attribute>
+            </xpath>
+        </field>
+    </record> -->
+
+
+
+
+
+
+
+    <!-- <menuitem 
+        name="Mes Congés" 
+        parent="hr.menu_open_view_employee_list_my" 
+        id="menu_employee_holidays_kanban" 
+        action="owatrans_rh.action_view_leaves_employee_kanban" 
+        groups="group_sup"
+    /> -->
+    <menuitem 
+        name="Mes Congés" 
+        id="menu_employee_holidays_kanban" 
+        parent="hr.menu_open_view_employee_list_my" 
+        action="owatrans_rh.action_view_leaves_employee_kanban" 
+    />
+
+    <menuitem
+        name='Tous les employees'
+        id='menu_owatrans_rh'
+        parent='hr.menu_open_view_employee_list_my'
+        action='owatrans_rh.open_view_owatrans_employee_all_list_my'
+        sequence='30'/>
+
+
+    <menuitem
+        name='Temporaires'
+        id='menu_owatrans_rh_temporaire'
+        parent='hr.menu_open_view_employee_list_my'
+        action='open_view_owatrans_employee_temporaire_list_my'
+        sequence='35'/>
+
+    <menuitem
+        name='Stagiaires'
+        id='menu_owatrans_rh_stagaire'
+        parent='hr.menu_open_view_employee_list_my'
+        action='open_view_owatrans_employee_stagiaire_list_my'
+        sequence='40'/>
+
+    <menuitem
+        name='Prestataire'
+        id='menu_owatrans_rh_prestataire'
+        parent='hr.menu_open_view_employee_list_my'
+        action='open_view_owatrans_employee_prestataire_list_my'
+        sequence='45'/>
+
+    <menuitem
+        name='Journaliers'
+        id='menu_owatrans_rh_journalier'
+        parent='hr.menu_open_view_employee_list_my'
+        action='open_view_owatrans_employee_journalier_list_my'
+        sequence='50'/>
+
+    
+    <menuitem 
+        name="Historiques Pointages" 
+        id="menu_historiques_pointages" 
+        parent="hr.menu_open_view_employee_list_my" 
+        action="owatrans_rh.action_historiques_pointages"
+        sequence='55'
+    />
+
+    <menuitem 
+        name="Presence" 
+        id="menu_liste_presence" 
+        parent="hr.menu_open_view_employee_list_my" 
+        action="owatrans_rh.action_liste_presence"
+        sequence='60'
+    /> 
+
+
+    <menuitem
+        name='Jours fériés locaux'
+        id='menu_jours_feries_locaux'
+        parent='hr.menu_human_resources_configuration'
+        action='action_jours_feries_locaux'
+        sequence='70'/>           
+
+    </data>
+</odoo>

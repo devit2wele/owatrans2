@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id="template" xml:space="preserve">
+<T t-extend = "ListView.buttons">
+<T t-jquery = "button.oe_list_add" t-operation = "after">
+<T t-if = "widget.model == 'fongip_rh.pointage_biometrique'">
+<button class = "oe_button" type = "button" string="Test">corriger</button>
+</T>
+</T>
+</T>
+</templates>
+
+
+	

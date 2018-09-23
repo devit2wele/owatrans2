@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+        <report 
+            string="Presence" 
+            id="report_owatrans_presence" 
+            model="owatrans.presence" 
+            report_type="qweb-pdf"
+            menu="False"
+            name="owatrans_rh.report_presence" 
+            file="owatrans_rh.report_presence"
+        />
+</odoo>

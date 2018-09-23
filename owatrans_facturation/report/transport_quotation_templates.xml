@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="owatrans_facturation.report_transportquotation_document">
+    <t t-call="report.external_layout">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+        <div class="page">
+            <div class="oe_structure"/>
+
+            <div class="row mt32 mb32" style="margin-top: 0 px !important;margin-bottom: 0 px !important;">
+                <img class="col-xs-2" style="margin-top: 0 px !important;margin-bottom: 0 px !important;" src='/owatrans_facturation/static/description/icon.png'/>
+            </div>
+            <div class="row mt32 mb32" style="margin-top: 0 px !important;margin-bottom: 0 px !important;" >
+                <div class="col-xs-2" style="margin-top: 0 px !important;margin-bottom: 0 px !important;text-align: center;" >
+                    <span style="text-align: center;">NINEA <span t-field="o.company_id.ninea"/></span>
+                </div>
+            </div>
+
+            <div class="row mt32 mb32" style="margin-top: 0 px !important;margin-bottom: 0 px !important;">
+                <div class="col-xs-4" style="margin-top: 0 px !important;margin-bottom: 0 px !important;">
+                    <!-- <span style="border-bottom: 1 px solid;">PERIODE DU 27 au 05 MARS 2018</span> -->
+                </div>
+                <div class="col-xs-4" style="margin-top: 0 px !important;margin-bottom: 0 px !important;">
+                    <h3 style="color:#0D355C !important;">DEMANDE DE PRIX</h3>
+                </div>
+                <div class="col-xs-4" style="margin-top: 0 px !important;margin-bottom: 0 px !important;text-align:center;">
+                    <span>Dakar, le </span><span t-field="o.date"/>
+                </div>
+            </div>
+
+
+            <div class="row mt32 mb32" style="margin-top: 0 px !important;margin-bottom: 0 px !important;margin-right: 0.2% !important;margin-left: 0.2% !important;">
+                <div class="col-xs-6">
+                </div>
+                <div class="col-xs-5 col-xs-offset-1" style="border: 1 px solid;height: 50px !important;padding-top:2%;padding-bottom:3%;text-align:center;">
+                    <span t-field="o.partner_id.parent_id.name"/>
+                    <span t-field="o.partner_id.parent_id.country_id"/><br/>
+                    <span t-field="o.partner_id.name"/>
+                    <span t-field="o.partner_id.cni"/>
+                </div>
+            </div>
+
+            <div class="row mt32 mb32" style="margin-top: 0 px !important;margin-bottom: 0 px !important;margin-right: 0.2% !important;margin-left: 0.2% !important;">
+                <div class="col-xs-7">
+                    
+                </div>
+                <div class="col-xs-5" style="border: 1 px solid;padding-top:1.6%;padding-bottom:1.6%;text-align:center;">
+                    <span style="border: 1 px solid;padding:1.5%;" t-field="o.name" />
+                </div>
+            </div>
+            <div class="row mt32 mb32" style="margin-top: 0 px !important;margin-bottom: 0 px !important;margin-right: 0.2% !important;margin-left: 0.2% !important;border:1px solid;">
+                <span>ADRESSE SWIFT</span>
+                <span t-field="o.partner_id.parent_id.code_swift"/>
+            </div>
+            <div class="row mt32 mb32" style="margin-top: 0 px !important;margin-bottom: 0 px !important;margin-right: 0.2% !important;margin-left: 0.2% !important;border:1px solid;">
+                <span t-field="o.type"/>
+            </div>
+
+            <table class="table table-bordered" style="margin-bottom:0px !important;">
+                <thead>
+                    <tr>
+                        <th class="text-right"><strong>DATE</strong></th>
+                        <th class="text-center"><strong>N BL</strong></th>
+                        <th class="text-right"><strong>N CONTENEUR</strong></th>
+                        <th class="text-right"><strong>TAILLE</strong></th>
+                        <th class="text-right"><strong>TYPE</strong></th>
+                        <th class="text-right"><strong>DESTINATION</strong></th>
+                        <th class="text-right"><strong>Prix</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="o.order_line" t-as="order_line">
+                        <td>
+                            <span style="float: right;" t-field="o.date"/>
+                        </td>
+                        <td>
+                            <span style="float: right;">56777887776</span>
+                        </td>
+                        <td>
+                            <span style="float: right;" t-field="order_line.numero"/>
+                        </td>
+                        <td class="text-center">
+                            <span style="float: right;" t-field="order_line.type_container"/>
+                        </td>
+                        <td>
+                            <span style="float: right;" t-field="order_line.categorie"/>
+                        </td>
+                        <td>
+                            <span style="float: right;" t-field="order_line.zone_sempos"/>
+                        </td>
+                        <td>
+                            <span style="float: right;" t-field="order_line.price_total"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row mt32 mb32" style="margin-top: 0 px !important;margin-bottom: 0 px !important;margin-right: 0.2% !important;margin-left: 0.2% !important;border:1px solid;">
+                <t t-if="o.is_with_taxe()">
+                    <span class="col-xs-10 mt32 mb32" style="margin-top: 0 px !important;margin-bottom: 0 px !important;">
+                        MONTANT TOUTES TAXES COMPRISES
+                    </span>
+                </t>
+                <t t-else="">
+                    <span class="col-xs-10 mt32 mb32" style="margin-top: 0 px !important;margin-bottom: 0 px !important;">
+                        MONTANT HORS TAXES
+                    </span>
+                </t>
+                <div class="col-xs-2 mt32 mb32" style="margin-top: 0 px !important;margin-bottom: 0 px !important;text-align:right;margin-left:-0.4% !important;">
+                    <span t-field="o.amount_total"
+                                    t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                </div>
+            </div>
+            <p t-field="o.notes"/>
+            <div class="oe_structure"/>
+        </div>
+    </t>
+</template>
+
+<template id="report_transportquotation">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="owatrans_facturation.report_transportquotation_document" t-lang="o.partner_id.lang"/>
+        </t>
+    </t>
+</template>
+</odoo>
+    

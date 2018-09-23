@@ -1,0 +1,123 @@
+<openerp>
+    <data>
+        
+
+
+
+    
+
+
+
+
+
+    <record id="action_owatrans_rh_permanent" model="ir.actions.act_window">
+                            <field name="name">Permanents</field>
+                            <field name="res_model">hr.employee</field>
+                            <field name='view_type'>form</field>
+                            <field name='view_mode'>tree,form</field>
+                            <field name="help" type="html">
+                            <p class="oe_view_nocontent_create">
+                               Cliquez pour enregistrer un nouvel employé.
+                            </p>
+                            </field>
+                        </record>
+
+
+
+    <record id="owatrans_rh_leaves_kanban" model="ir.ui.view">
+            <field name="name">owatrans.rh.leaves.kanban</field>
+            <field name="model">hr.employee</field>
+            <field name="arch" type="xml">
+                <kanban class="oe_background_grey" create="0">
+                    <field name="name"/>
+                    <field name="color"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                             <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_project oe_kanban_global_click">
+                                <div class="oe_dropdown_toggle oe_dropdown_kanban" groups="owatrans_rh.group_sup,owatrans_rh.group_dga,owatrans_rh.group_drh">
+                                    <span class="oe_e">í</span>
+                                    <ul class="oe_dropdown_menu">
+                                        <t t-if="widget.view.is_action_enabled('edit')"><li><a type="edit">Edit...</a></li></t>
+                                        <t t-if="widget.view.is_action_enabled('delete')"><li><a type="delete">Delete</a></li></t>
+                                        <t t-if="widget.view.is_action_enabled('edit')"><li><ul class="oe_kanban_colorpicker" data-field="color"/></li></t>
+                                    </ul>
+                                </div>
+                                <div class="oe_kanban_content">
+                                    <h4 class="text-center"><strong><field name="name"/></strong></h4>
+                                    <div class="oe_items_list oe_kanban_ellipsis">
+                                        <div>
+                                            <a name="%(action_view_leaves_dp)d" type="action">
+                                                <field name="remaining_leaves"/> Jours de congés restants
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a name="%(action_view_leaves_employee)d" type="action">Toutes les demandes</a>
+                                        </div>
+                                    </div>
+                                    <div class="oe_picking_type_gauge">
+                                        <field name="taken_leaves" widget="gauge" style="width:200px; height: 110px;" options="{'levelcolors': ['#a9d70b', '#f9c802', '#ff0000'], 'max_field':'max_leaves', 'on_click_label': 'dave'}">Déjà pris</field>
+                                        <field name="max_leaves" widget="gauge" style="width:150px; height: 110px;" options="{'levelcolors': ['#ff0000', '#f9c802','#a9d70b' ], 'max_field':'max_leaves', 'on_click_label': 'dave'}">Acquis</field>
+                                    </div>
+
+                                </div>
+                            </div>
+                       </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+
+
+<record id="action_view_leaves_employee_kanban_drh" model="ir.actions.act_window">
+                            <field name="name">Demande de congés à valider</field>
+                            <field name="res_model">hr.employee</field>
+                            <field name='view_type'>form</field>
+                            <field name='view_mode'>kanban</field>
+                            <field name="view_id" ref="owatrans_rh_leaves_kanban"/>
+                            <field name="help" type="html">
+                            <p class="oe_view_nocontent_create">
+                               Cliquez pour enregistrer un nouvel employé.
+                            </p>
+                            </field>
+                        </record>
+
+                       <record id="action_view_all_leaves_dp" model="ir.actions.act_window">
+                            <field name="name">Demande de congés à valider</field>
+                            <field name="res_model">hr.holidays</field>
+                            <field name='view_type'>form</field>
+                            <field name='view_mode'>tree,form</field>
+                            <field name="search_view_id" ref="hr_holidays.view_hr_holidays_filter"/>
+                            <field name="domain">[('employee_id.parent_id.user_id','=',uid)]</field>
+                            <field name="help" type="html">
+                            <p class="oe_view_nocontent_create">
+                               Cliquez pour enregistrer un nouvel employé.
+                            </p>
+                            </field>
+                        </record>
+
+    <record id="action_view_all_leaves_sg" model="ir.actions.act_window">
+                            <field name="name">Demande de congés à valider</field>
+                            <field name="res_model">hr.holidays</field>
+                            <field name='view_type'>form</field>
+                            <field name='view_mode'>tree,form</field>
+                            <field name="search_view_id" ref="hr_holidays.view_hr_holidays_filter"/>
+                            <field name="domain">[('state','=','confirm')]</field>
+                            <field name="help" type="html">
+                            <p class="oe_view_nocontent_create">
+                               Cliquez pour enregistrer un nouvel employé.
+                            </p>
+                            </field>
+                        </record>
+
+
+<menuitem name="Tous les congés" parent="hr.menu_open_view_employee_list_my" id="menu_employee_holidays_kanban2" action="owatrans_rh.action_view_leaves_employee_kanban_drh" groups="group_drh,group_dga,group_dg"/>
+   <menuitem name="Demande de congés à valider" parent="hr_holidays.menu_open_ask_holidays" id="menu_request_approve_holidays_dp" action="action_view_leaves_dp" groups="group_sup"/>
+
+  <menuitem name="Demandes de congés de mon pole" parent="hr_holidays.menu_open_ask_holidays" id="menu_request_all_holidays_dp" action="action_view_all_leaves_dp" groups="group_sup"/>
+
+<menuitem name="Demandes de congés à Valider" parent="hr_holidays.menu_open_ask_holidays" id="menu_request_all_holidays_sg" action="action_view_all_leaves_sg" groups="group_dga"/>
+
+
+</openerp>

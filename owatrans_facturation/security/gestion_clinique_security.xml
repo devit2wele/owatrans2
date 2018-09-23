@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="module_category_gestion_clinique" model="ir.module.category">
+            <field name="name">CLINIQUE</field>
+            <field name="sequence">201</field>
+        </record>
+        <record id="gestion_clinique_group_dentiste" model="res.groups">
+            <field name="name">Dentiste</field>
+            <field name="category_id" ref="gestion_clinique.module_category_gestion_clinique"/>
+        </record>
+        <record id="gestion_clinique_group_assistant" model="res.groups">
+            <field name="name">Assistant</field>
+            <field name="category_id" ref="gestion_clinique.module_category_gestion_clinique"/>
+        </record>
+    </data>
+</odoo>

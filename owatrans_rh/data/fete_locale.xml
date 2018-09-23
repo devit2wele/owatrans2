@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+     <!-- Fetes locales-->
+        <record model="owatrans_rh.fete_locale" id="magal">
+          <field name="name">Magal</field>
+          <field name="type_fete">fete_religieuse</field>
+        </record>
+
+     <record model="owatrans_rh.fete_locale" id="gamou">
+          <field name="name">Gamou</field>
+          <field name="type_fete">fete_religieuse</field>
+        </record>
+
+      <record model="owatrans_rh.fete_locale" id="korite">
+          <field name="name">Korité</field>
+          <field name="type_fete">fete_religieuse</field>
+        </record>
+     
+     <record model="owatrans_rh.fete_locale" id="tabaski">
+          <field name="name">Tabaski</field>
+          <field name="type_fete">fete_religieuse</field>
+        </record>
+
+     <record model="owatrans_rh.fete_locale" id="tamkharite">
+          <field name="name">Tamkharite</field>
+          <field name="type_fete">fete_religieuse</field>
+        </record>
+
+      <record model="owatrans_rh.fete_locale" id="lendemain_dimanche">
+          <field name="name">Lendemain de Dimanche férié</field>
+          <field name="type_fete">decret</field>
+        </record>
+
+     <record model="owatrans_rh.fete_locale" id="autre">
+          <field name="name">Autre</field>
+          <field name="type_fete">autre</field>
+        </record>
+    </data>
+</odoo>

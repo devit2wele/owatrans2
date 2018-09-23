@@ -1,0 +1,362 @@
+<odoo>
+  <data>
+
+    <!-- ****************************************begin type macaron***************************************-->
+    <record id='owatrans_type_macaron_view_tree' model='ir.ui.view'>
+      <field name="name">owatrans.type_macaron.tree</field>
+      <field name="model">owatrans.type_macaron</field>
+      <field name="arch" type="xml">
+        <tree >
+          <field name="name"/>
+        </tree>
+      </field>
+    </record>
+    <record model="ir.actions.act_window" id="create_type_macaron">
+      <field name="name">Type de macaron</field>
+      <field name="res_model">owatrans.type_macaron</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          Cliquez ici pour creer un nouveau type de macaron
+        </p>
+      </field>
+    </record>
+    <!-- ****************************************end type macaron***************************************-->
+    <!-- ****************************************begin macaron***************************************-->
+    <record model="ir.ui.view" id="owatrans_macaron_view_form"> 
+      <field name="name">owatrans.macaron.form</field>
+      <field name="model">owatrans.macaron</field>
+      <field name="arch" type="xml">
+        <form string = "Macaron">
+          <header>
+            <button modifiers="{'invisible': [['state', '=', 'closed']]}" name="cloturer" states="open" string="Cloturer" type="object" class="oe_highlight"/>
+            <button modifiers="{'invisible': [['state', '=', 'closed']]}" name="cloturer" states="toclose" string="Cloturer" type="object" class="oe_highlight"/>
+            <field name="state" widget="statusbar" readonly="1" />
+          </header>
+          <!--header>
+            <button modifiers="{'invisible': [['state', '=', 'done']]}" name="renouveler_macaron" states="open" string="Renouveler le macaron" type="object" class="oe_highlight"/>
+                <field name="state" widget="statusbar" />
+          </header-->
+          <sheet>
+              <group col="2" >
+                <group>
+                  <field name="type_macaron"/>
+                  <field name="vehicule_attribue"/>
+                  <field name="libelle" />
+                </group>
+                <group>
+                  <field name="reference" />
+                  <field name="date_creation"/>
+                  <field name="date_expiration"/>
+                </group>
+              </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id='owatrans_macaron_view_tree' model='ir.ui.view'>
+      <field name="name">owatrans.macaron.tree</field>
+      <field name="model">owatrans.macaron</field>
+      <field name="arch" type="xml">
+        <tree string="Liste des macarons" decoration-warning="days_left>0 and days_left&lt;30" decoration-danger="days_left==0" decoration-muted="state=='closed'">
+          <field name="libelle" />
+          <field name="days_left" invisible="1"/>
+          <field name="type_macaron" />
+          <field name="reference"/>
+          <field name="vehicule_attribue"/>
+          <field name="date_expiration"/>
+          <field name="state" />
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="owatrans_macaron_action">
+      <field name="name">Macaron</field>
+      <field name="res_model">owatrans.macaron</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                  Cliquez pour creer un nouveau macaron.
+              </p>
+      </field>
+    </record> 
+
+
+    <menuitem name="Gestion des macarons" id="owatrans_parc_automobile_macaron" parent="fleet.menu_root" />
+    <menuitem name="Macaron" id="owatrans_parc_automobile.macaron_create" parent="owatrans_parc_automobile_macaron" action="owatrans_macaron_action" sequence="10"/>
+
+    <!-- ****************************************end macaron***************************************-->
+
+    <!-- ****************************************begin reservation***************************************-->
+      <record model="ir.ui.view" id="owatrans_reservation_view_form"> 
+      <field name="name">owatrans.reservation.form</field>
+      <field name="model">owatrans.reservation</field>
+      <field name="arch" type="xml">
+        <form string = "Reservation">
+          <header>
+            <button modifiers="{'invisible': [['state', '=', 'done']]}" name="reserver" states="draft" string="Réserver" type="object" class="oe_highlight"/>
+            <button modifiers="{'invisible': [['state', 'not in ', ['done']]]}" name="annuler" states="done" string="Annuler" type="object" class="oe_highlight"/>
+            <field name="state" widget="statusbar" readonly="1" />
+          </header>
+          <sheet>
+              <group col="2" >
+                  <group>
+                  <field name="vehicule"/>
+                  <field name="chauffeur"/>
+                  </group>
+                  <group>
+                  <field name="date_debut" />
+                  <field name="date_fin"/>
+                  </group>
+                </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id='owatrans_reservation_view_tree' model='ir.ui.view'>
+      <field name="name">owatrans.reservation.tree</field>
+      <field name="model">owatrans.reservation</field>
+      <field name="arch" type="xml">
+          <tree >
+            <field name="vehicule"/>
+            <field name="chauffeur"/>
+            <field name="date_debut"/>
+            <field name="date_fin" />
+          </tree>
+      </field>
+    </record>
+
+     <record id='owatrans_reservation_view_calendar' model='ir.ui.view'>
+      <field name="name">owatrans.reservation.calendar</field>
+      <field name="model">owatrans.reservation</field>
+      <field name="arch" type="xml">
+          <calendar date_start="date_debut" date_stop="date_fin" mode="month" string="Vue calendrier des reservations">
+            <field name="vehicule"/>
+          </calendar>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_reservation">
+      <field name="name">Reservation</field>
+      <field name="res_model">owatrans.reservation</field>
+      <field name="view_type">form</field>
+      <field name="view_id" ref="owatrans_reservation_view_calendar"/>
+      <field name="view_mode">calendar,tree,form</field>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          Cliquez ici pour reserver
+        </p>
+      </field>
+    </record>
+
+
+    <menuitem name="Reservation" id="owatrans_parc_automobile_reservation" parent="fleet.menu_root"/>
+    <menuitem name="Reservation" id="owatrans_parc_automobile.reservation_create" parent="owatrans_parc_automobile_reservation" action="action_reservation" sequence="20"/>
+    <!-- ****************************************end reservation***************************************-->
+
+    <!-- ****************************************begin mission***************************************-->
+      <record model="ir.ui.view" id="owatrans_mission_view_form"> 
+      <field name="name">owatrans.mission.form</field>
+      <field name="model">owatrans.mission</field>
+      <field name="arch" type="xml">
+        <form string = "Missions">
+          <header>
+            <button modifiers="{'invisible': [['state', '=', 'done']]}" name="commencer" states="open" string="Commencer" type="object" class="oe_highlight"/>
+            <button modifiers="{'invisible': [['state', '=','done']]}" name="terminer" states="in_progress" string="Terminer" type="object" class="oe_highlight"/>
+            <field name="state" widget="statusbar" readonly="1" />
+          </header>
+          <sheet>
+              <group col="2" string = "Ordre de mission">
+                <group>
+                  <field name="vehicule" />
+                  <field name="objectif"/>
+                  <field name="trajet"/>
+                  
+                </group>
+                <group>
+                  <field name="chauffeur" domain = "[('est_chauffeur','=','oui')]"/>
+                  <!--field name="lettre_mission" widget="many2many_binary"/-->
+                </group>
+                </group>
+              <group col="2">
+                <group string = "Départ">
+                  <field name="date_debut"/>
+                  <field name="lieu_depart"/>
+                  <field name="kilo_depart"/>
+                </group>
+                <group string = "Retour">
+                  <field name="date_fin"/>
+                  <field name="lieu_arrive"/>
+                  <field name="kilo_retour"/>
+                </group>
+                </group>
+                <group col="2">
+                  <group>
+                    <label for="temps_parcouru"/>
+                    <div class="o_row">
+                        <field name="temps_parcouru" readonly="1"/>
+                    </div>
+                    <label for="kilo_parcouru"/>
+                    <div class="o_row">
+                        <field name="kilo_parcouru" readonly="1"/><span>KM</span>
+                    </div>
+                    <!--field name="temps_parcouru" readonly="1"/>
+                    <field name="kilo_parcouru" readonly="1" /><span>KM</span-->
+                  </group>
+                </group>
+                <notebook>
+                  <page string="Equipe de la mission">
+                    <!--field name="equipe_mission" widget="one2many_tags"/-->
+                    <field name="equipe_mission" widget="one2many_list">
+                      <tree editable="bottom">
+                        <field name="missionnaire_id" />
+                        <field name="lettre_mission" widget="many2many_binary"/>
+                      </tree>
+                    </field>
+                    <!--field name="equipe_mission">
+                    <tree>
+                      <field name="name"/>
+                    </tree>
+                  </field-->
+                  </page>
+                </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id='owatrans_mission_view_tree' model='ir.ui.view'>
+      <field name="name">owatrans.mission.tree</field>
+      <field name="model">owatrans.mission</field>
+      <field name="arch" type="xml">
+          <tree>
+            <field name="vehicule"/>
+            <field name="chauffeur"/>
+            <field name="date_debut"/>
+            <field name="date_fin" />
+          </tree>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_create_mission">
+      <field name="name">Mission</field>
+      <field name="res_model">owatrans.mission</field>
+      <field name="view_type">form</field>
+      <field name="view_id" ref="owatrans_mission_view_tree"/>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          Cliquez ici pour creer une mission
+        </p>
+      </field>
+    </record>
+
+
+    <menuitem name="Mission" id="owatrans_parc_automobile_mission" parent="fleet.menu_root"/>
+    <menuitem name="Mission" id="owatrans_parc_automobile_mission_create" parent="owatrans_parc_automobile_mission" action="action_create_mission" sequence="20"/>
+    <!-- ****************************************end reservation***************************************-->
+
+    <!--                       Employes                                                           -->
+    <record id="view_employee_form_fleet" model="ir.ui.view">
+            <field name="name">view.employee.form.fleet.inherited</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field eval="18" name="priority"/>
+            <!--field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/-->
+            <field name="arch" type="xml">
+              <field name="marital" position="after">
+                <field name="est_chauffeur" widget="radio" class="oe_edit_only" options="{'horizontal': true}"/>
+                <field name="numero_permis" attrs="{'invisible': [('est_chauffeur','=','non')]}"/>
+                <field name="type_permis" attrs="{'invisible': [('est_chauffeur','=','non')]}" />
+              </field>
+                
+            </field>
+        </record>
+    <!--                                                                                  -->
+    <!-- *********************************Vehicule **************************************** -->
+    <record id="vehicle_view_form_fleet" model="ir.ui.view">
+            <field name="name">view.vehicle.form.fleet.inherited</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+            <field eval="18" name="priority"/>
+            <!--field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/-->
+            <field name="arch" type="xml">
+              <field name="color" position="after">
+                <field name="status" invisible="1"/>
+              </field>
+                
+            </field>
+        </record>
+        <record id="fleet_vehicle_view_search_inherited" model="ir.ui.view">
+            <field name="name">fleet.vehicle.view_search.inherited</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_search"/>
+            <field eval="18" name="priority"/>
+            <!--field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/-->
+            <field name="arch" type="xml">
+              <field name="state_id" position="after">
+                <field name="status"/>
+              </field>
+            </field>
+        </record>
+
+    <!-- *********************************Vehicule **************************************** -->
+    
+
+    <record model="ir.actions.act_window" id="owatrans_gps_action">
+      <field name="name">Coordonnees GPS</field>
+      <field name="res_model">owatrans.gps</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                  Cliquez pour enregistrer de nouvelle coordonnees.
+              </p>
+      </field>
+    </record>
+    
+    
+
+    
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="owatrans_parc_automobile.action_server">
+      <field name="name">owatrans_parc_automobile server</field>
+      <field name="model_id" ref="model_owatrans_parc_automobile_owatrans_parc_automobile"/>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._name,
+        }
+      </field>
+    </record>
+    -->
+
+    <!-- Top menu item -->
+    
+    <!--menuitem name="Parc Automobile" id="owatrans_parc_automobile.menu_root"/-->
+    
+    <!-- menu categories -->
+
+    <!--menuitem name="Fleet" id="fleet.menu_root" sequence="115"/-->
+    <menuitem name="Maintenance" id="owatrans_parc_automobile.Maintenance" parent="fleet.menu_root"/>
+    <menuitem name="Maintenance" id="owatrans_parc_automobile.maintenance_create" parent="owatrans_parc_automobile.Maintenance" action="fleet.fleet_vehicle_log_services_action" sequence="10"/>
+    <!-- hide menuitem -->
+    <record model="ir.ui.menu" id="fleet.fleet_vehicle_log_services_menu">
+      <field name="action" eval="False" />
+    </record>
+    <!-- -->
+    <!--menuitem action="fleet.fleet_vehicle_log_services_action" parent="fleet.fleet_vehicles" id="fleet.fleet_vehicle_log_services_menu" groups="empty_group"/-->
+    
+
+    <menuitem name="Coordonnees GPS" id="owatrans_parc_automobile.gps" parent="owatrans_parc_automobile_macaron" action="owatrans_gps_action" sequence="20" />
+
+    <menuitem name="Type de macaron" id="owatrans_parc_automobile_type_macaron" 
+      parent="fleet.fleet_configuration" action="create_type_macaron"
+      />
+    
+  </data>
+</odoo>

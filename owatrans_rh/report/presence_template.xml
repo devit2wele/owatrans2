@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="owatrans_rh.report_presence_document">
+        <t>
+            <div class="page">
+                <div class="row mt32 mb32" style="margin-top: 0 px !important;margin-bottom: 0 px !important;">
+                    <img class="col-xs-2" style="margin-top: 0 px !important;margin-bottom: 0 px !important;" src='/owatrans_rh/static/description/icon.png'/>
+                </div>
+                <h2 style="text-align:center;color:#581112;">Fiche récaputilative des pointages</h2>
+                <h4 style="text-align:center;color:#581112;">Allant de la date du <span t-field="o.date_from"/> au <span t-field="o.date_to"/></h4>
+                <div class="">
+                    <div>
+                        <strong>Employé: </strong><span t-esc="o.employee.name"/>
+                    </div>
+                    <div>
+                        <strong>Responsable Service: </strong><span t-esc="o.employee.parent_id.name"/>
+                    </div>
+                    <div>
+                        <strong>Service: </strong><span t-esc="o.employee.department_id.name"/>
+                    </div>
+                    <div>
+                        <strong>Presence effective(en min): </strong><span t-esc="int(round(o.diff_presence*60))"/>
+                    </div>
+                </div>
+                <h3 style="text-align:center;color:#581112;margin-top:50px;">Historique</h3>
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center" ><strong>Type pointage</strong></th>
+                            <th class="text-center" ><strong>Heure Pointage</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.pointage_manuel_ids" t-as="pointage_manuel">
+                            <td class="text-center">
+                                <span t-field="pointage_manuel.type_pointage"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="pointage_manuel.date_heure"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> 
+        </t>
+    </template>
+
+    <template id="report_presence">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="owatrans_rh.report_presence_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>
+    

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <!-- Top menu item -->
+    <data>
+        <record model="ir.ui.menu" id="purchase.menu_purchase_root">
+            <field name="name">Gestion des Approvisionnements</field>
+        </record>
+    </data>
+
+</odoo>
